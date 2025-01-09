@@ -1,0 +1,44 @@
+.navigation-container {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 20px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  background: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.tabs button.active {
+  border-bottom: 2px solid #007BFF;
+  color: #007BFF;
+  font-weight: bold;
+}
+
+.tabs button:hover {
+  color: #0056b3;
+}
+
+.tabs button:disabled {
+  color: #1010104d;
+  cursor: not-allowed;
+}
+
+.content {
+  padding: 20px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  min-height: 200px;
+}
