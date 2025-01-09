@@ -1,5 +1,6 @@
-import React from "react";
-import { transferAlbums } from "../services/apis";
+import React from 'react';
+
+import { transferAlbums } from '../services/apis';
 
 const Transfer = () => {
   const handleTransfer = async () => {

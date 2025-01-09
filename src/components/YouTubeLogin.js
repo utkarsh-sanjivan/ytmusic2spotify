@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
 const YouTubeLogin = () => {
-  const GOOGLE_CLIENT_ID = "your_google_client_id";
+  const GOOGLE_CLIENT_ID = 'your_google_client_id';
 
   useEffect(() => {
     const handleCredentialResponse = (response) => {
-      console.log("Encoded JWT ID token: " + response.credential);
+      console.log('Encoded JWT ID token: ' + response.credential);
       // Handle token exchange
     };
 
@@ -15,8 +15,8 @@ const YouTubeLogin = () => {
     });
 
     window.google.accounts.id.renderButton(
-      document.getElementById("google-login-button"),
-      { theme: "outline", size: "large" }
+      document.getElementById('google-login-button'),
+      { theme: 'outline', size: 'large' }
     );
   }, []);
 

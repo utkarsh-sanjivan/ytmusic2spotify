@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-const CLIENT_ID = "522581562627-fknj5gh7c78g9kf7bmjtqdqv26lpovah.apps.googleusercontent.com";
-const REDIRECT_URI = "YOUR_REDIRECT_URI";
-const SCOPES = "https://www.googleapis.com/auth/youtube.readonly";
+const CLIENT_ID =
+  '522581562627-fknj5gh7c78g9kf7bmjtqdqv26lpovah.apps.googleusercontent.com';
+const REDIRECT_URI = 'YOUR_REDIRECT_URI';
+const SCOPES = 'https://www.googleapis.com/auth/youtube.readonly';
 
 const YouTubeLogin = ({
   isYoutubeAuthenticated,
-  setIsYoutubeAuthenticated
+  setIsYoutubeAuthenticated,
 }) => {
   const [userInfo, setUserInfo] = useState(null);
 
@@ -19,7 +20,7 @@ const YouTubeLogin = ({
   };
 
   const fetchUserInfo = (accessToken) => {
-    fetch("https://www.googleapis.com/oauth2/v1/userinfo?alt=json", {
+    fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -30,13 +31,13 @@ const YouTubeLogin = ({
         setIsYoutubeAuthenticated(true);
       })
       .catch((error) => {
-        console.error("Failed to fetch user info:", error);
+        console.error('Failed to fetch user info:', error);
       });
   };
 
   React.useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.slice(1));
-    const accessToken = hashParams.get("access_token");
+    const accessToken = hashParams.get('access_token');
 
     if (accessToken) {
       fetchUserInfo(accessToken);
@@ -54,7 +55,11 @@ const YouTubeLogin = ({
       ) : (
         <div>
           <h3>Welcome, {userInfo?.name}!</h3>
-          <img src={userInfo?.picture} alt="User Avatar" style={{ borderRadius: "50%" }} />
+          <img
+            src={userInfo?.picture}
+            alt="User Avatar"
+            style={{ borderRadius: '50%' }}
+          />
           <p>Email: {userInfo?.email}</p>
         </div>
       )}
