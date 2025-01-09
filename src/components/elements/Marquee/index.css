@@ -1,0 +1,17 @@
+.marquee-container {
+  display: flex;
+  width: 100%;
+  color: #007BFF;
+}
+
+.marquee-text-header {
+  padding: 10px;
+  margin: 0 1px 0 0;
+}
+
+.marquee-text {
+  padding: 10px;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
