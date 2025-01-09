@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { fetchSpotifyAlbums, fetchYouTubeMusicAlbums } from "../../../services/apis";
+import React, { useState, useEffect } from 'react';
+
+import {
+  fetchSpotifyAlbums,
+  fetchYouTubeMusicAlbums,
+} from '../../../services/apis';
 import './index.css';
 
 const AlbumList = () => {

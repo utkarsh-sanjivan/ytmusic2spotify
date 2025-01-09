@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { fetchSpotifyAlbums, fetchYouTubeMusicAlbums } from "../services/apis";
+import React, { useState, useEffect } from 'react';
+
+import { fetchSpotifyAlbums, fetchYouTubeMusicAlbums } from '../services/apis';
 
 const AlbumList = () => {
   const [spotifyAlbums, setSpotifyAlbums] = useState([]);
