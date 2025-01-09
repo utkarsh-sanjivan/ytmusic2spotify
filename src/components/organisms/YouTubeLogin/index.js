@@ -41,6 +41,7 @@ const YouTubeLogin = ({
     if (accessToken) {
       fetchUserInfo(accessToken);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
