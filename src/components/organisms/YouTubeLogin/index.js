@@ -3,9 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { updateSessionStorage } from '../../../utils/session-storage';
 import { getSecretValue } from '../../../utils/get-secret';
 
-// const CLIENT_ID =
-//   '443028097591-o0n3lhgqgsr27v1mk0m5qjn9i4elij00.apps.googleusercontent.com';
-// const REDIRECT_URI = 'http://localhost:3000/?tab=youtube';
 const CLIENT_ID = getSecretValue('YOUTUBE_CLIENT_ID');
 const REDIRECT_URI = getSecretValue('YOUTUBE_REDIRECT_URL');
 

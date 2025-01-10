@@ -3,8 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { updateSessionStorage } from '../../../utils/session-storage';
 import { getSecretValue } from '../../../utils/get-secret';
 
-// const CLIENT_ID = "2b948bbcfeca4d3c8c437a742e06a25c";
-// const REDIRECT_URI = "http://localhost:3000/?tab=spotify";
 const CLIENT_ID = getSecretValue('SPOTIFY_CLIENT_ID');
 const REDIRECT_URI = getSecretValue('SPOTIFY_REDIRECT_URL');
 const SCOPES = [
