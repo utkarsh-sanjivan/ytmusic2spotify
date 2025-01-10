@@ -46,6 +46,7 @@ const Navigation = () => {
         handleSessionStorageChange
       );
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const renderActiveTab = () => {
