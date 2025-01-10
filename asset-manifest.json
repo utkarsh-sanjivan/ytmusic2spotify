@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/ytmusic2spotify/static/css/main.0b8bd959.css",
-    "main.js": "/ytmusic2spotify/static/js/main.87486480.js",
+    "main.js": "/ytmusic2spotify/static/js/main.f29acc35.js",
     "index.html": "/ytmusic2spotify/index.html",
     "main.0b8bd959.css.map": "/ytmusic2spotify/static/css/main.0b8bd959.css.map",
-    "main.87486480.js.map": "/ytmusic2spotify/static/js/main.87486480.js.map"
+    "main.f29acc35.js.map": "/ytmusic2spotify/static/js/main.f29acc35.js.map"
   },
   "entrypoints": [
     "static/css/main.0b8bd959.css",
-    "static/js/main.87486480.js"
+    "static/js/main.f29acc35.js"
   ]
 }
