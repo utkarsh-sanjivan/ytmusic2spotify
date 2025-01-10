@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const CLIENT_ID =
-  '522581562627-fknj5gh7c78g9kf7bmjtqdqv26lpovah.apps.googleusercontent.com';
-const REDIRECT_URI = 'YOUR_REDIRECT_URI';
+import { updateSessionStorage } from '../../../utils/session-storage';
+import { getSecretValue } from '../../../utils/get-secret';
+
+// const CLIENT_ID =
+//   '443028097591-o0n3lhgqgsr27v1mk0m5qjn9i4elij00.apps.googleusercontent.com';
+// const REDIRECT_URI = 'http://localhost:3000/?tab=youtube';
+const CLIENT_ID = getSecretValue('YOUTUBE_CLIENT_ID');
+const REDIRECT_URI = getSecretValue('YOUTUBE_REDIRECT_URL');
+
 const SCOPES = 'https://www.googleapis.com/auth/youtube.readonly';
 
-const YouTubeLogin = ({
-  isYoutubeAuthenticated,
-  setIsYoutubeAuthenticated,
-}) => {
+const YouTubeLogin = () => {
   const [userInfo, setUserInfo] = useState(null);
 
   const handleLogin = () => {
@@ -19,48 +22,90 @@ const YouTubeLogin = ({
     window.location.href = authUrl;
   };
 
-  const fetchUserInfo = (accessToken) => {
-    fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setUserInfo(data);
-        setIsYoutubeAuthenticated(true);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch user info:', error);
+  const fetchUserInfo = () => {
+    const query = new URLSearchParams(window.location.search);
+    function getUserInfoFromSession() {
+      updateSessionStorage('isYoutubeAuthenticated', true);
+      setUserInfo({
+        user_name: sessionStorage.getItem('youtube_user_name'),
+        profile_picture: sessionStorage.getItem('youtube_profile_picture'),
       });
+    }
+
+    function getUserInfoFromYoutube() {
+      const params = new URLSearchParams(window.location.hash.slice(1));
+      const accessToken = params.get('access_token');
+      fetch(
+        'https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true',
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          updateSessionStorage('isYoutubeAuthenticated', true);
+          setUserInfo({
+            user_name: data.items[0].snippet.title,
+            profile_picture: data.items[0].snippet.thumbnails?.default?.url,
+          });
+          sessionStorage.setItem(
+            'youtube_user_name',
+            data.items[0].snippet.title
+          );
+          sessionStorage.setItem(
+            'youtube_profile_picture',
+            data.items[0].snippet.thumbnails?.default?.url
+          );
+        })
+        .catch((error) => {
+          console.error('Failed to fetch user info:', error);
+        });
+    }
+
+    if (
+      query.get('tab') === 'youtube' &&
+      !sessionStorage.getItem('youtube_user_name')
+    ) {
+      getUserInfoFromYoutube();
+    } else if (
+      query.get('tab') !== 'youtube' &&
+      sessionStorage.getItem('youtube_user_name')
+    ) {
+      getUserInfoFromSession();
+    } else if (
+      query.get('tab') === 'youtube' &&
+      sessionStorage.getItem('youtube_user_name')
+    ) {
+      getUserInfoFromSession();
+    }
   };
 
-  React.useEffect(() => {
-    const hashParams = new URLSearchParams(window.location.hash.slice(1));
-    const accessToken = hashParams.get('access_token');
-
-    if (accessToken) {
-      fetchUserInfo(accessToken);
-    }
+  useEffect(() => {
+    fetchUserInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    window.location, // see if this can be improved
+  ]);
 
   return (
     <div>
       <h2>YouTube Login</h2>
-      {!isYoutubeAuthenticated ? (
+      {!sessionStorage.getItem('isYoutubeAuthenticated') ? (
         <div>
           <button onClick={handleLogin}>Log in with YouTube</button>
         </div>
       ) : (
         <div>
-          <h3>Welcome, {userInfo?.name}!</h3>
-          <img
-            src={userInfo?.picture}
-            alt="User Avatar"
-            style={{ borderRadius: '50%' }}
-          />
-          <p>Email: {userInfo?.email}</p>
+          {userInfo?.profile_picture ? (
+            <img
+              src={userInfo?.profile_picture}
+              alt="User Avatar"
+              style={{ borderRadius: '50%' }}
+            />
+          ) : null}
+          <h3>Welcome, {userInfo?.user_name}!</h3>
         </div>
       )}
     </div>
