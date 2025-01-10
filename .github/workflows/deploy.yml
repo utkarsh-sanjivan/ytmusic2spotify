@@ -38,3 +38,7 @@ jobs:
         user_email: 'utkarsh.sannu@gmail.com'
         github_token: ${{ secrets.TOKEN_FOR_REPO_DEPLOY }}
         repository: 'utkarsh-sanjivan/ytmusic2spotify'
+        SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+        SPOTIFY_REDIRECT_URL: ${{ secrets.SPOTIFY_REDIRECT_URL }}
+        YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+        YOUTUBE_REDIRECT_URL: ${{ secrets.YOUTUBE_REDIRECT_URL }}

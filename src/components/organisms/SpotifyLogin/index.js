@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
-const CLIENT_ID = 'YOUR_SPOTIFY_CLIENT_ID';
-const REDIRECT_URI = 'YOUR_REDIRECT_URI';
+import { updateSessionStorage } from '../../../utils/session-storage';
+import { getSecretValue } from '../../../utils/get-secret';
+
+const CLIENT_ID = getSecretValue('SPOTIFY_CLIENT_ID');
+const REDIRECT_URI = getSecretValue('SPOTIFY_REDIRECT_URL');
 const SCOPES = [
   'user-read-private',
   'user-read-email',
@@ -11,7 +14,6 @@ const SCOPES = [
 ];
 
 const SpotifyLogin = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
 
   const getSpotifyLoginURL = () => {
@@ -21,36 +23,72 @@ const SpotifyLogin = () => {
     )}&scope=${scopes}`;
   };
 
-  const fetchUserInfo = (accessToken) => {
-    fetch('https://api.spotify.com/v1/me', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setUserInfo(data);
-        setIsAuthenticated(true);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch Spotify user info:', error);
+  const fetchUserInfo = () => {
+    const query = new URLSearchParams(window.location.search);
+    function getUserInfoFromSession() {
+      updateSessionStorage('isSpotifyAuthenticated', true);
+      setUserInfo({
+        user_name: sessionStorage.getItem('spotify_user_name'),
+        profile_picture: sessionStorage.getItem('spotify_profile_picture'),
       });
+    }
+
+    function getUserInfoFromSpotify() {
+      const params = new URLSearchParams(window.location.hash.slice(1));
+      const accessToken = params.get('access_token');
+
+      fetch('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          updateSessionStorage('isSpotifyAuthenticated', true);
+          setUserInfo({
+            user_name: data?.display_name,
+            profile_picture: data?.images[0]?.url,
+          });
+          sessionStorage.setItem('spotify_user_name', data?.display_name);
+          sessionStorage.setItem(
+            'spotify_profile_picture',
+            data?.images[0]?.url
+          );
+        })
+        .catch((error) => {
+          console.error('Failed to fetch Spotify user info:', error);
+        });
+    }
+
+    if (
+      query.get('tab') === 'spotify' &&
+      !sessionStorage.getItem('spotify_user_name')
+    ) {
+      getUserInfoFromSpotify();
+    } else if (
+      query.get('tab') !== 'spotify' &&
+      sessionStorage.getItem('spotify_user_name')
+    ) {
+      getUserInfoFromSession();
+    } else if (
+      query.get('tab') === 'spotify' &&
+      sessionStorage.getItem('spotify_user_name')
+    ) {
+      getUserInfoFromSession();
+    }
   };
 
   useEffect(() => {
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const accessToken = params.get('access_token');
-
-    if (accessToken) {
-      fetchUserInfo(accessToken);
-    }
-  }, []);
+    fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    window.location, // see if this can be improved
+  ]);
 
   return (
     <div>
       <h2>Spotify Login</h2>
-      {!isAuthenticated ? (
+      {!sessionStorage.getItem('isSpotifyAuthenticated') ? (
         <div>
           <a href={getSpotifyLoginURL()}>
             <button>Log in with Spotify</button>
@@ -58,15 +96,14 @@ const SpotifyLogin = () => {
         </div>
       ) : (
         <div>
-          <h3>Welcome, {userInfo?.display_name}!</h3>
-          {userInfo?.images?.[0]?.url && (
+          {userInfo?.profile_picture && (
             <img
-              src={userInfo.images[0].url}
+              src={userInfo.profile_picture}
               alt="User Avatar"
               style={{ borderRadius: '50%', width: '100px' }}
             />
           )}
-          <p>Email: {userInfo?.email}</p>
+          <h3>Welcome, {userInfo?.user_name}!</h3>
         </div>
       )}
     </div>

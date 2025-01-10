@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import Header from '../../template/Header';
 import Footer from '../../template/Footer';
@@ -7,19 +7,11 @@ import Marquee from '../../elements/Marquee';
 import './index.css';
 
 const HomePage = () => {
-  const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
-  const [isYoutubeAuthenticated, setIsYoutubeAuthenticated] = useState(false);
-
   return (
     <>
       <Header />
       <Marquee />
-      <Navigation
-        isSpotifyAuthenticated={isSpotifyAuthenticated}
-        setIsSpotifyAuthenticated={setIsSpotifyAuthenticated}
-        isYoutubeAuthenticated={isYoutubeAuthenticated}
-        setIsYoutubeAuthenticated={setIsYoutubeAuthenticated}
-      />
+      <Navigation />
       <Footer />
     </>
   );
